@@ -17,6 +17,16 @@ def findAddress(soup):
         address = ''
     return address
 
+def findDistricts(soup):
+    districts = []
+    try:
+        district_elements = soup.find_all('span', attrs={'class': 'adres tag-adress'})  
+        for element in district_elements:
+            districts.append(element.get_text(strip=True))
+    except AttributeError:
+        pass
+    return districts
+
 def findDevname(soup):
     try:
         dev_name = soup.find('div', attrs = {'class': 'developerName'}).get_text(strip=True)
@@ -37,13 +47,6 @@ def findArea(soup):
     except AttributeError:
         area = ''
     return area
-
-def findDistrict(soup):
-    try:
-        district = soup.find('a', attrs = {'class': 'breadcrumb-link'}).get_text(strip=True)
-    except AttributeError:
-        district = ''
-    return district
 
 def roomCount(soup):
     try:
@@ -77,6 +80,10 @@ if __name__ == '__main__':
     webpage = requests.get(url, HEADERS)
 
     soup = BeautifulSoup(webpage.content, 'html.parser')
+    
+    # District in the main webpage
+    districts = findDistricts(soup)
+    d['district'].extend(districts)
 
     # Open new link to extract the data in a new webpage
     links = soup.find_all('a', attrs={'class': 'property-text'})
@@ -92,7 +99,6 @@ if __name__ == '__main__':
 
         d['title'].append(find_infoTitle(new_soup))
         d['address'].append(findAddress(new_soup))
-        d['district'].append(findDistrict(new_soup))
         d['devname'].append(findDevname(new_soup))
         d['price'].append(findPrice(new_soup))
         d['area'].append(findArea(new_soup))
