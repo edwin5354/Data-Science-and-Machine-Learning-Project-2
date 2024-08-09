@@ -20,7 +20,7 @@ def findAddress(soup):
 def findDistricts(soup):
     districts = []
     try:
-        district_elements = soup.find_all('span', attrs={'class': 'adres tag-adress'})  
+        district_elements = soup.find_all('span', attrs={'class': 'adress tag-adress'})  
         for element in district_elements:
             districts.append(element.get_text(strip=True))
     except AttributeError:
@@ -65,7 +65,7 @@ def roomAge(soup):
     return age
 
 if __name__ == '__main__':
-    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
     url = 'https://hk.centanet.com/findproperty/en/list/buy'
     HEADERS = {'User-Agent': user_agent, 'Accept-Language': 'en-US, en;q=0.5'}
 
@@ -74,12 +74,14 @@ if __name__ == '__main__':
 
     # Create a dictionary that transforms into csv/ excel file
     d = {'title': [], 'address': [], 'district': [], 'devname': [], 
-        'price': [], 'area': [], 'room': [], 'age':[]}
+        'price': [], 'area': []}#, 'room': [], 'age':[]}
 
-    url = 'https://hk.centanet.com/findproperty/en/list/buy'
-    webpage = requests.get(url, HEADERS)
+    #d = {'district': []}
 
-    soup = BeautifulSoup(webpage.content, 'html.parser')
+    # url = 'https://hk.centanet.com/findproperty/en/list/buy'
+    # webpage = requests.get(url, HEADERS)
+
+    soup = BeautifulSoup(response.content, 'html.parser')
     
     # District in the main webpage
     districts = findDistricts(soup)
@@ -87,23 +89,27 @@ if __name__ == '__main__':
 
     # Open new link to extract the data in a new webpage
     links = soup.find_all('a', attrs={'class': 'property-text'})
+    
     link_list = []
+
 
     # Extract unique links for different properties
     for link in links:
         link_list.append(link.get('href'))
+    print('https://hk.centanet.com' + link_list[0])
 
     for link in link_list:
-        new_webpage = requests.get('https://hk.centanet.com/findproperty/' + link, headers=HEADERS)
-        new_soup = BeautifulSoup(new_webpage.content, 'html.parser')
+        with httpx.Client(verify=False) as client:
+            new_webpage = client.get('https://hk.centanet.com' + link, headers=HEADERS)
+            new_soup = BeautifulSoup(new_webpage.content, 'html.parser')
 
-        d['title'].append(find_infoTitle(new_soup))
-        d['address'].append(findAddress(new_soup))
-        d['devname'].append(findDevname(new_soup))
-        d['price'].append(findPrice(new_soup))
-        d['area'].append(findArea(new_soup))
-        d['room'].append(roomCount(new_soup))
-        d['age'].append(roomAge(new_soup))
+            d['title'].append(find_infoTitle(new_soup))
+            d['address'].append(findAddress(new_soup))
+            d['devname'].append(findDevname(new_soup))
+            d['price'].append(findPrice(new_soup))
+            d['area'].append(findArea(new_soup))
+            #d['room'].append(roomCount(new_soup))
+            #d['age'].append(roomAge(new_soup))
 
-    estate_df = pd.DataFrame.from_dict(d)
-    estate_df.to_csv() # Store it somewhere in the local computer and publish it in Github
+estate_df = pd.DataFrame.from_dict(d)
+estate_df.to_csv("./download.csv") # Store it somewhere in the local computer and publish it in Github
