@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("./download.csv", index_col=0)
+df = pd.read_csv("./csv/download.csv", index_col=0)
 
 # Data cleansing
 df['price'] = df['price'].str.replace("$","")
@@ -33,4 +33,4 @@ def get_region(district):
 
 df['region'] = df['district'].apply(get_region)
 
-df.to_csv("./cleaned.csv")
+df.to_csv("./csv/cleaned.csv")

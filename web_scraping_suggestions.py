@@ -48,21 +48,31 @@ def findArea(soup):
         area = ''
     return area
 
-def roomCount(soup):
-    try:
-        room_paragraph = soup.find('p', attrs={'class': 'info-tag'}, text=lambda t: 'Room' in t)
-        numRoom = room_paragraph.get_text(strip=True) if room_paragraph else ""
-    except AttributeError:
-        numRoom = ''
-    return numRoom
 
-def roomAge(soup):
-    try:
-        age_paragraph = soup.find('p', attrs={'class': 'info-tag'}, text=lambda t: 'Age' in t)
-        age = age_paragraph.get_text(strip=True) if age_paragraph else ""
-    except AttributeError:
-        age = ''
-    return age
+# def grossArea(soup):
+#     try:
+#         area = soup.find('span', attrs = {'class': 'area'}).get_text(strip=True)
+#     except AttributeError:
+#         area = ''
+#     return area
+
+
+# def roomCount(soup):
+#     try:
+#         room_paragraph = soup.find('p', attrs={'class': 'info-tag'}, text=lambda t: 'Room' in t)
+#         numRoom = room_paragraph.get_text(strip=True) if room_paragraph else ""
+#     except AttributeError:
+#         numRoom = ''
+#     return numRoom
+
+# def roomAge(soup):
+#     try:
+#         age_paragraph = soup.find('p', attrs={'class': 'info-tag'}, text=lambda t: 'Age' in t)
+#         age = age_paragraph.get_text(strip=True) if age_paragraph else ""
+#     except AttributeError:
+#         age = ''
+#     return age
+
 
 if __name__ == '__main__':
     user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
