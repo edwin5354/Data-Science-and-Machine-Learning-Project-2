@@ -95,7 +95,7 @@ if __name__ == '__main__':
     
     # District in the main webpage
     districts = findDistricts(soup)
-    d['district'].extend(districts)
+    d['district'].append(districts)
 
     # Open new link to extract the data in a new webpage
     links = soup.find_all('a', attrs={'class': 'property-text'})
@@ -122,4 +122,4 @@ if __name__ == '__main__':
             #d['age'].append(roomAge(new_soup))
 
 estate_df = pd.DataFrame.from_dict(d)
-estate_df.to_csv("./download.csv") # Store it somewhere in the local computer and publish it in Github
+estate_df.to_csv("./csv/download.csv") # Store it somewhere in the local computer and publish it in Github
