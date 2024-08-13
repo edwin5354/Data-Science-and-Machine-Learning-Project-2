@@ -102,7 +102,8 @@ if __name__ == '__main__':
 
 
 
-    total_no_page = 3
+    total_no_page = 3  # temporarily hard-coded, value to be scrapped
+
     for i in range(1, total_no_page + 1):
 
         # District in the main webpage
@@ -121,11 +122,11 @@ if __name__ == '__main__':
         for link in link_list:
             
             #driver.get(link)
-            driver.execute_script(f"window.open('{link}', '_blank');") # JS code, open new tab
+            driver.execute_script(f"window.open('{link}', '_blank');")  # JS code, open new tab
             time.sleep(0.5)
-            driver.switch_to.window(driver.window_handles[-1]) # JS code, switch tab
+            driver.switch_to.window(driver.window_handles[-1])  # JS code, switch tab
 
-            j += 1 # property-page counter + 1
+            j += 1  # property-page counter + 1
 
             d['title'].append(find_infoTitle(driver))
             d['address'].append(findAddress(driver))
@@ -135,19 +136,19 @@ if __name__ == '__main__':
             #d['room'].append(roomCount(new_soup))
             #d['age'].append(roomAge(new_soup))
             
-            print("Main sub-page: {}, property-page count: {}".format(i,j))
+            print("Main sub-page: {}, property-page count: {}".format(i,j))     # print counter for checking
             driver.close() # close tab
-            driver.switch_to.window(driver.window_handles[0]) # Switch Tab back to main page
+            driver.switch_to.window(driver.window_handles[0])    # Switch Tab back to main page
 
-        # driver.back() # ideal choice, return to previous page, may have to repeat 24 times
-        j=1 # reset property-page counter
-        driver.get(url) # return to main page, but sub-page selection return to sub-page 1
+        # driver.back()     # ideal choice, return to previous page, may have to repeat 24 times
+        j=1     # reset property-page counter
+        driver.get(url)     # return to main page, but sub-page selection return to sub-page 1
         time.sleep(0.5) 
 
         # Next Main sub-page
         if i < total_no_page:
             next_page_button = driver.find_element(By.XPATH, "//button[@class='btn-next']")
-            driver.execute_script("arguments[0].scrollIntoView();", next_page_button)  # Scroll to the next-button
+            driver.execute_script("arguments[0].scrollIntoView();", next_page_button)    # Scroll to the next-button, currently with issue
             time.sleep(0.5)
             next_page_button.click()
             time.sleep(0.5)
@@ -155,5 +156,5 @@ if __name__ == '__main__':
 
 
 estate_df = pd.DataFrame.from_dict(d)
-estate_df.to_csv("./csv/download.csv") # Store it somewhere in the local computer and publish it in Github
+estate_df.to_csv("./csv/download.csv")  # Store it somewhere in the local computer and publish it in Github
 driver.quit()
